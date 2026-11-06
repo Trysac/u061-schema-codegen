@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add schema_codegen: generate Pydantic v2 models and TypeScript types from a JSON Schema model graph, with injection-safe rendering and a `--check` CLI mode.
 - Initial project structure from the factory utility template.

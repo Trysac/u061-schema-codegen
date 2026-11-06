@@ -2,27 +2,26 @@
 
 ## Purpose
 
-`trysac-schema-codegen` is a small, dependency-free Python library: Generate Pydantic v2 models and TypeScript types from one JSON Schema model graph, injection-safe, with a CI check mode for stale outputs
+`trysac-schema-codegen` is a small, dependency-free Python library (module `schema_codegen`) that generates Pydantic v2 models and TypeScript types from one JSON Schema model graph.
 
 ## Shape
 
 ```text
-caller code --> schema_codegen (public API in __init__.py)
+schema file --> _graph.py (load, validate, build TypeDef/FieldDef graph)
                     |
-                    +-- pure functions, no I/O, no global state
+                    +--> _render.py (render_pydantic, render_typescript)
+                    |
+                    +--> __main__.py (CLI, reads and writes files, --check)
 ```
 
-- **Public API**: the names listed in `__all__` of `src/schema_codegen/__init__.py`. Anything else is
-  internal and may change without a major version.
-- **Errors**: invalid input raises built-in exceptions (`ValueError`, `TypeError`) with a clear
-  message; the library never prints or exits.
-- **Side effects**: none. If a feature needs I/O, isolate it in its own module behind a small
-  interface and record the choice in an ADR.
+- **Public API**: the names listed in `__all__` of `src/schema_codegen/__init__.py`: `MISSING`, `ErrorCode`, `FieldDef`, `SchemaCodegenError`, `TypeDef`, `__version__`, `build_model_graph`, `load_schema`, `render_pydantic`, `render_typescript`.
+- **Errors**: invalid input raises `SchemaCodegenError` with a stable `code` and an optional `pointer`. The library never exits the process.
+- **Logging**: a module logger with a `NullHandler`; the library does not configure logging.
+- **I/O**: confined to `load_schema` / `read_schema_file` and to the CLI, which is the only code that writes files.
 
-## Quality contract
+## Naming and rendering
 
-`scripts/check.py` is the single definition of the gates; `fabrica.json` tells the factory and CI
-how to run it. See [TESTING.md](TESTING.md).
+Names are PascalCase from definition keys or titles, with a numeric suffix on collision in sorted order. Output is sorted alphabetically by name. Python enums come first, then classes, then aliases and unions in dependency order, followed by one `model_rebuild()` call per class.
 
 ## Decisions
 

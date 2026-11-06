@@ -1,21 +1,26 @@
-"""Generate Pydantic v2 models and TypeScript types from one JSON Schema model graph, injection-safe, with a CI check mode for stale outputs"""
+"""Generate Pydantic v2 models and TypeScript types from one JSON Schema model graph."""
 
 from __future__ import annotations
 
-__all__ = ["__version__", "normalize"]
+import logging
+
+from ._errors import ErrorCode, SchemaCodegenError
+from ._graph import MISSING, FieldDef, TypeDef, build_model_graph, load_schema
+from ._render import render_pydantic, render_typescript
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+__all__ = [
+    "MISSING",
+    "ErrorCode",
+    "FieldDef",
+    "SchemaCodegenError",
+    "TypeDef",
+    "__version__",
+    "build_model_graph",
+    "load_schema",
+    "render_pydantic",
+    "render_typescript",
+]
 
 __version__ = "0.1.0"
-
-
-def normalize(value: str) -> str:
-    """Return ``value`` trimmed and lower-cased.
-
-    Placeholder API created by the template: replace it with the utility's real behavior.
-
-    Raises:
-        ValueError: if ``value`` is empty or only whitespace.
-    """
-    cleaned = value.strip()
-    if not cleaned:
-        raise ValueError("value must not be empty")
-    return cleaned.lower()
