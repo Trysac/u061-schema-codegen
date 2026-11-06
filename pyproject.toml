@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+schema-codegen = "schema_codegen.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/Trysac/u061-schema-codegen"
 Source = "https://github.com/Trysac/u061-schema-codegen"
